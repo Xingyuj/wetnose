@@ -1,106 +1,876 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wetnose – Know Your Cat Better</title>
-<style>
-body { margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:#fafafa; color:#222; }
-header { padding:80px 20px; text-align:center; background:linear-gradient(135deg,#ffe9f0,#e8f6ff); }
-header h1 { font-size:48px; margin-bottom:16px; }
-header p { font-size:20px; max-width:720px; margin:0 auto 32px; }
-.cta { display:inline-block; padding:14px 28px; background:#ff6f91; color:white; border-radius:999px; text-decoration:none; font-weight:600; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wetnose – Personalised Pet Supply Subscriptions</title>
+  <meta name="description" content="Personalised pet supply subscriptions that help you understand your pet and manage their needs." />
+  <style>
+    :root{
+      --bg:#fff7fb;
+      --ink:#1f2430;
+      --muted:#5b6475;
+      --card:#ffffff;
+      --line:rgba(31,36,48,.10);
+      --shadow:0 18px 50px rgba(0,0,0,.10);
+      --shadow2:0 10px 30px rgba(0,0,0,.08);
+      --pink:#ff4fa3;
+      --purple:#7c4dff;
+      --blue:#38b6ff;
+      --mint:#2ee6a6;
+      --sun:#ffd84d;
+      --radius:26px;
+    }
 
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(255,79,163,.16), transparent 55%),
+        radial-gradient(1200px 700px at 80% 15%, rgba(56,182,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 60% 85%, rgba(46,230,166,.16), transparent 60%),
+        linear-gradient(180deg, #fff7fb 0%, #ffffff 55%, #fff7fb 100%);
+      color:var(--ink);
+      overflow-x:hidden;
+    }
 
-section { padding:80px 20px; max-width:1100px; margin:0 auto; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:32px; }
-.card { background:white; border-radius:24px; padding:32px; box-shadow:0 10px 30px rgba(0,0,0,0.06); }
-.card h3 { margin-top:0; }
+    a{ color:inherit; }
 
+    /* Floating paw confetti */
+    .paws{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.7;
+      z-index:0;
+    }
+    .paw{
+      position:absolute;
+      width:22px;
+      height:22px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
+      animation: floatDown linear infinite;
+      transform: translateY(-120px) rotate(0deg);
+      opacity:.35;
+    }
+    @keyframes floatDown{
+      0%{ transform: translateY(-160px) rotate(0deg); opacity:0; }
+      10%{ opacity:.38; }
+      100%{ transform: translateY(calc(100vh + 180px)) rotate(360deg); opacity:0; }
+    }
 
-.story { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
-.story img { width:100%; border-radius:24px; }
+    .wrap{ position:relative; z-index:1; }
 
+    /* Top nav */
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(14px);
+      background: rgba(255,255,255,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      max-width:1120px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      background: conic-gradient(from 180deg, var(--pink), var(--purple), var(--blue), var(--mint), var(--sun), var(--pink));
+      box-shadow: 0 12px 28px rgba(255,79,163,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.75), transparent 45%);
+      transform: rotate(18deg);
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .chip-link{
+      text-decoration:none;
+      font-weight:700;
+      font-size:14px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .chip-link:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
 
-footer { padding:60px 20px; text-align:center; background:#111; color:#eee; }
-footer p { opacity:0.7; font-size:14px; }
+    /* Buttons */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:14px 18px;
+      border-radius:999px;
+      border:1px solid rgba(31,36,48,.12);
+      background: rgba(255,255,255,.85);
+      font-weight:800;
+      text-decoration:none;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+    .btn-primary{
+      border:none;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--blue));
+      color:#fff;
+      box-shadow: 0 18px 40px rgba(124,77,255,.18);
+    }
+    .btn-primary:hover{ box-shadow: 0 22px 55px rgba(255,79,163,.22); }
 
+    /* Layout */
+    .container{ max-width:1120px; margin:0 auto; padding:0 18px; }
+    .hero{ padding:58px 0 36px; }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:26px;
+      align-items:stretch;
+    }
 
-@media (max-width:768px){
-header h1 { font-size:36px; }
-.story { grid-template-columns:1fr; }
-}
-</style>
+    .hero-card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero-card:before{
+      content:"";
+      position:absolute;
+      inset:-60px;
+      background:
+        radial-gradient(400px 220px at 20% 25%, rgba(255,79,163,.22), transparent 60%),
+        radial-gradient(420px 260px at 80% 30%, rgba(56,182,255,.22), transparent 60%),
+        radial-gradient(420px 260px at 55% 85%, rgba(46,230,166,.18), transparent 60%);
+      transform: rotate(-2deg);
+      pointer-events:none;
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(31,36,48,.12);
+      background: rgba(255,255,255,.72);
+      font-weight:800;
+      font-size:13px;
+      position:relative;
+      z-index:1;
+    }
+    .dot{ width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--blue)); }
+
+    h1{
+      margin:14px 0 10px;
+      font-size:54px;
+      line-height:1.02;
+      letter-spacing:-.8px;
+      position:relative;
+      z-index:1;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:18px;
+      line-height:1.45;
+      max-width:56ch;
+      position:relative;
+      z-index:1;
+    }
+    .hero-actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:18px; position:relative; z-index:1; }
+
+    .stats{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+    .stat{
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(31,36,48,.10);
+      background: rgba(255,255,255,.75);
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .badge{
+      font-weight:900;
+      color:var(--ink);
+      background: rgba(255,216,77,.45);
+      padding:4px 10px;
+      border-radius:999px;
+    }
+
+    /* Right side interactive card */
+    .builder{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .builder:before{
+      content:"";
+      position:absolute;
+      inset:-70px;
+      background: radial-gradient(520px 320px at 20% 20%, rgba(124,77,255,.16), transparent 60%),
+                  radial-gradient(520px 320px at 90% 30%, rgba(255,79,163,.14), transparent 60%);
+      transform: rotate(4deg);
+      pointer-events:none;
+    }
+    .builder h2{ margin:0 0 8px; font-size:18px; position:relative; z-index:1; }
+    .builder p{ margin:0 0 14px; color:var(--muted); font-size:14px; position:relative; z-index:1; }
+
+    .field{ margin:12px 0; position:relative; z-index:1; }
+    .label{ display:flex; align-items:center; justify-content:space-between; font-weight:800; font-size:13px; margin-bottom:8px; }
+    .hint{ color:var(--muted); font-weight:700; font-size:12px; }
+
+    .seg{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    .seg button{
+      padding:12px 10px;
+      border-radius:16px;
+      border:1px solid rgba(31,36,48,.12);
+      background: rgba(255,255,255,.82);
+      cursor:pointer;
+      font-weight:900;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+    }
+    .seg button:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+    .seg button.active{
+      border-color: rgba(255,79,163,.55);
+      background: linear-gradient(135deg, rgba(255,79,163,.18), rgba(56,182,255,.14));
+    }
+
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+    .chip{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(31,36,48,.12);
+      background: rgba(255,255,255,.84);
+      cursor:pointer;
+      font-weight:800;
+      font-size:13px;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+    }
+    .chip:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+    .chip.on{ border-color: rgba(46,230,166,.75); background: rgba(46,230,166,.12); }
+
+    .range{
+      width:100%;
+      accent-color: var(--pink);
+    }
+
+    .quote{
+      margin-top:14px;
+      border: 1px solid rgba(31,36,48,.10);
+      background: rgba(255,255,255,.78);
+      border-radius: 22px;
+      padding:14px;
+      position:relative;
+      z-index:1;
+    }
+    .quote-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .price{
+      font-weight:1000;
+      font-size:20px;
+      letter-spacing:-.2px;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--blue));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .pill{
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      background: rgba(255,216,77,.45);
+    }
+    .quote small{ display:block; color:var(--muted); margin-top:6px; line-height:1.35; }
+
+    /* Sections */
+    section{ padding:34px 0; }
+    .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
+    .card{
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding:22px;
+      box-shadow: var(--shadow2);
+      position:relative;
+      overflow:hidden;
+    }
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-80px;
+      background: radial-gradient(380px 220px at 20% 25%, rgba(255,216,77,.20), transparent 60%),
+                  radial-gradient(380px 220px at 80% 30%, rgba(46,230,166,.14), transparent 60%);
+      transform: rotate(-4deg);
+      pointer-events:none;
+    }
+    .card h3{ margin:0 0 8px; position:relative; z-index:1; }
+    .card p{ margin:0; color:var(--muted); line-height:1.45; position:relative; z-index:1; }
+
+    /* Mini interactions */
+    .mini{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:stretch;
+      margin-top:12px;
+    }
+    .mini-card{
+      flex:1;
+      min-width:240px;
+      background: rgba(255,255,255,.84);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: var(--shadow2);
+    }
+    .mini-title{ font-weight:1000; margin:0 0 8px; }
+
+    .toggle{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .switch{
+      width:54px;
+      height:32px;
+      border-radius:999px;
+      background: rgba(31,36,48,.14);
+      position:relative;
+      cursor:pointer;
+      border:1px solid rgba(31,36,48,.12);
+      transition: background .15s ease;
+    }
+    .knob{
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      background:#fff;
+      position:absolute;
+      top:50%;
+      left:3px;
+      transform: translateY(-50%);
+      box-shadow: 0 10px 20px rgba(0,0,0,.16);
+      transition: left .16s ease;
+    }
+    .switch.on{ background: rgba(46,230,166,.55); }
+    .switch.on .knob{ left:24px; }
+
+    .quiz{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .quiz button{
+      border:1px solid rgba(31,36,48,.12);
+      background: rgba(255,255,255,.88);
+      padding:10px 12px;
+      border-radius: 14px;
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .quiz button:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+    .quiz button.selected{ border-color: rgba(56,182,255,.65); background: rgba(56,182,255,.12); }
+
+    .toast{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:50;
+      width:min(420px, calc(100vw - 36px));
+      padding:14px 14px;
+      border-radius:20px;
+      background: rgba(255,255,255,.9);
+      border:1px solid rgba(31,36,48,.12);
+      box-shadow: var(--shadow);
+      display:none;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .toast .icon{
+      width:40px; height:40px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(255,79,163,.25), rgba(56,182,255,.18));
+      display:flex; align-items:center; justify-content:center;
+      font-size:20px;
+    }
+    .toast strong{ display:block; margin-bottom:2px; }
+    .toast p{ margin:0; color:var(--muted); line-height:1.35; font-size:13px; }
+    .toast .x{ margin-left:auto; cursor:pointer; font-weight:900; padding:8px 10px; border-radius:12px; border:1px solid rgba(31,36,48,.12); background: rgba(255,255,255,.85); }
+
+    .footer{
+      margin-top:34px;
+      padding:34px 0 54px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      h1{ font-size:44px; }
+      .grid{ grid-template-columns: 1fr; }
+      .nav-links{ display:none; }
+    }
+
+    /* Little paw icon (inline svg) */
+    .paw-svg{ width:18px; height:18px; display:inline-block; vertical-align:-3px; }
+  </style>
 </head>
 <body>
+  <!-- floating paws layer -->
+  <div class="paws" id="paws" aria-hidden="true"></div>
 
+  <div class="wrap">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="brand" role="banner">
+          <div class="logo" aria-hidden="true"></div>
+          <div>Wetnose</div>
+        </div>
+        <div class="nav-links" aria-label="Site">
+          <a class="chip-link" href="#how">How it feels</a>
+          <a class="chip-link" href="#builder">Build a plan</a>
+          <a class="chip-link" href="#join">Join</a>
+        </div>
+        <button class="btn btn-primary" id="btnToast" type="button">🎁 Little surprise</button>
+      </div>
+    </div>
 
-<header>
-<h1>Wetnose</h1>
-<p>Not just cat litter. Wetnose is a data-driven cat health & preference platform — starting from the litter box.</p>
-<a class="cta" href="#join">Scan. Register. Know your cat.</a>
-</header>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-grid">
+          <div class="hero-card">
+            <div class="kicker"><span class="dot"></span> Personalised pet supplies, made effortless</div>
+            <h1>Know your pet<br/>better — without the hassle.</h1>
+            <p class="sub">Wetnose helps you set up a flexible subscription that fits your pet’s real routine. Less guessing. Less waste. More calm.</p>
 
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#builder">Build your plan</a>
+              <a class="btn" href="#how">See how it works</a>
+            </div>
 
-<section>
-<h2>Why Wetnose?</h2>
-<div class="grid">
-<div class="card">
-<h3>🐾 Every Cat Is Different</h3>
-<p>Some cats love tofu litter. Some prefer mineral, paper, or clay. Wetnose helps you discover your cat’s true preference — automatically.</p>
-</div>
-<div class="card">
-<h3>📊 From Product to Insight</h3>
-<p>Each bag of Wetnose litter is a data point. Over time, patterns emerge: health, habits, comfort, and changes that matter.</p>
-</div>
-<div class="card">
-<h3>❤️ Health Starts Small</h3>
-<p>Litter usage, frequency, and behavior changes are often the first signs of health issues. Wetnose makes them visible.</p>
-</div>
-</div>
-</section>
+            <div class="stats" aria-label="Highlights">
+              <div class="stat">✨ <span class="badge">Custom</span> based on preferences</div>
+              <div class="stat">🧺 <span class="badge">Flexible</span> adjust anytime</div>
+              <div class="stat">🗂️ <span class="badge">Organised</span> manage needs in one place</div>
+            </div>
+          </div>
 
+          <aside class="builder" id="builder" aria-label="Plan builder">
+            <h2>Build a quick plan (interactive)</h2>
+            <p>Just for fun — tweak options and see the plan summary update instantly.</p>
 
-<section class="story">
-<div>
-<h2>A Simple Flow</h2>
-<p><strong>No surveys. No friction.</strong></p>
-<p>Scan the QR code on the litter bag. Your cat gets a profile instantly. Each purchase and interaction quietly builds a long-term health timeline.</p>
-<ul>
-<li>✔ QR scan → instant registration</li>
-<li>✔ Cat profile & preference tracking</li>
-<li>✔ Future-ready for devices & wearables</li>
-</ul>
-</div>
-<img src="https://placekitten.com/600/420" alt="Cat using litter" />
-</section>
+            <div class="field">
+              <div class="label">
+                <span>Pet type</span>
+                <span class="hint" id="petTypeHint">Cat selected</span>
+              </div>
+              <div class="seg" role="tablist" aria-label="Pet type">
+                <button type="button" class="active" data-pet="Cat" aria-selected="true">🐱 Cat</button>
+                <button type="button" data-pet="Dog" aria-selected="false">🐶 Dog</button>
+                <button type="button" data-pet="Both" aria-selected="false">🐾 Both</button>
+              </div>
+            </div>
 
+            <div class="field">
+              <div class="label">
+                <span>How many pets?</span>
+                <span class="hint"><span id="petCount">1</span></span>
+              </div>
+              <input class="range" id="count" type="range" min="1" max="4" value="1" />
+            </div>
 
-<section>
-<h2>What We’re Building</h2>
-<div class="grid">
-<div class="card">
-<h3>🧪 Smart Cat Litter</h3>
-<p>High-quality, health-focused litter designed as the entry point — not the end product.</p>
-</div>
-<div class="card">
-<h3>🌐 Meowverse Community</h3>
-<p>A place where cat owners, data, and experiences come together — Web2 friendly, Web3 ready.</p>
-</div>
-<div class="card">
-<h3>🤖 Future Devices</h3>
-<p>One day: collars, sensors, and AI insights — the “Apple Watch” for cats.</p>
-</div>
-</div>
-</section>
+            <div class="field">
+              <div class="label">
+                <span>Delivery frequency</span>
+                <span class="hint" id="freqHint">Every 4 weeks</span>
+              </div>
+              <input class="range" id="freq" type="range" min="2" max="8" value="4" />
+            </div>
 
+            <div class="field">
+              <div class="label"><span>Focus areas</span><span class="hint">Pick any</span></div>
+              <div class="chips" aria-label="Focus areas">
+                <button class="chip on" type="button" data-chip="Essentials">Essentials</button>
+                <button class="chip" type="button" data-chip="Sensitive skin">Sensitive skin</button>
+                <button class="chip" type="button" data-chip="Odour control">Odour control</button>
+                <button class="chip" type="button" data-chip="Calm routine">Calm routine</button>
+                <button class="chip" type="button" data-chip="Travel-friendly">Travel-friendly</button>
+              </div>
+            </div>
 
-<section id="join">
-<h2>Join From Day One</h2>
-<p>Wetnose is starting small, but thinking long-term. Early users help shape the future of cat health.</p>
-<a class="cta" href="#">Get Early Access</a>
-</section>
+            <div class="quote" aria-live="polite">
+              <div class="quote-top">
+                <div>
+                  <div class="price" id="price">$39–$59</div>
+                  <small id="summary">1 cat • every 4 weeks • Essentials</small>
+                </div>
+                <div class="pill" id="pill">Starter</div>
+              </div>
+              <small>Tip: hit “Join” to save your plan idea. (No real checkout here yet.)</small>
+              <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                <a class="btn btn-primary" href="#join">Join the waitlist</a>
+                <button class="btn" id="copyPlan" type="button">Copy plan text</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
 
+      <section id="how">
+        <div class="grid" aria-label="Why">
+          <div class="card">
+            <h3>🐾 Personal, not generic</h3>
+            <p>Different habits, preferences, sensitivities, routines. Wetnose helps you tailor supplies around your pet’s real life.</p>
+          </div>
+          <div class="card">
+            <h3>📦 Smarter subscriptions</h3>
+            <p>Adjust quantity, timing, and types when things change. No “fixed box” assumptions.</p>
+          </div>
+          <div class="card">
+            <h3>🗂️ One place to manage needs</h3>
+            <p>Keep essentials organised — so you’re not re-ordering in a rush or over-buying “just in case.”</p>
+          </div>
+        </div>
 
-<footer>
+        <div class="mini" aria-label="Mini interactions">
+          <div class="mini-card">
+            <p class="mini-title">🌈 Mood switch</p>
+            <div class="toggle">
+              <div>
+                <strong id="moodLabel">Playful mode</strong>
+                <div style="color:var(--muted); font-size:13px; margin-top:4px;">Flip to make the page calmer.</div>
+              </div>
+              <div class="switch on" id="moodSwitch" role="switch" aria-checked="true" tabindex="0">
+                <div class="knob" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <p class="mini-title">🧩 Tiny quiz (30 seconds)</p>
+            <div style="color:var(--muted); font-size:13px; margin-bottom:10px;">Your pet is most…</div>
+            <div class="quiz" role="group" aria-label="Tiny quiz">
+              <button type="button" data-quiz="Picky">Picky</button>
+              <button type="button" data-quiz="Sensitive">Sensitive</button>
+              <button type="button" data-quiz="Easy-going">Easy-going</button>
+              <button type="button" data-quiz="Active">Active</button>
+            </div>
+            <div style="margin-top:10px; color:var(--muted); font-size:13px;">Suggestion: <strong id="quizResult">Pick one above</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="join">
+        <div class="hero-card" style="padding:24px;">
+          <div class="kicker"><span class="dot"></span> Join early</div>
+          <h2 style="margin:12px 0 8px; font-size:28px; position:relative; z-index:1;">Get updates & early access</h2>
+          <p class="sub" style="font-size:15px; max-width:70ch;">Leave an email to be notified when Wetnose opens. We’ll also send you a copy of your plan builder summary.</p>
+
+          <form id="waitlist" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; position:relative; z-index:1;">
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              style="flex:1; min-width:240px; padding:14px 14px; border-radius:16px; border:1px solid rgba(31,36,48,.12); background: rgba(255,255,255,.88); font-weight:700;"
+            />
+            <button class="btn btn-primary" type="submit">Join</button>
+            <button class="btn" type="button" id="fakeScan" title="Just a fun micro-interaction">📷 Simulate scan</button>
+          </form>
+          <div style="margin-top:12px; color:var(--muted); font-size:13px; position:relative; z-index:1;">
+            <span id="formNote">No spam. You can unsubscribe anytime.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <div style="display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:center;">
+          <div style="display:flex; align-items:center; gap:10px; font-weight:900; color:var(--ink);">
+            <div class="logo" style="width:34px; height:34px; border-radius:13px;"></div>
+            Wetnose
+          </div>
+          <div>© Wetnose • Made for calmer pet care</div>
+        </div>
+      </div>
+
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <div class="icon">🐾</div>
+      <div>
+        <strong id="toastTitle">A tiny surprise!</strong>
+        <p id="toastBody">You found the playful corner of the page. Try clicking the paw button a few times.</p>
+      </div>
+      <button class="x" id="toastClose" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Utility ---
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => [...el.querySelectorAll(sel)];
+
+    // --- Floating paws ---
+    const paws = $('#paws');
+    const pawSVG = `data:image/svg+xml,${encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+        <path fill='rgba(31,36,48,.55)' d='M22 28c3 0 6-3 6-7s-3-7-6-7-6 3-6 7 3 7 6 7zm20 0c3 0 6-3 6-7s-3-7-6-7-6 3-6 7 3 7 6 7zM15 38c3 0 5-3 5-6s-2-6-5-6-5 3-5 6 2 6 5 6zm34 0c3 0 5-3 5-6s-2-6-5-6-5 3-5 6 2 6 5 6zM32 38c-10 0-17 9-17 16 0 5 6 8 17 8s17-3 17-8c0-7-7-16-17-16z'/>
+      </svg>
+    `)}`;
+
+    function spawnPaws(n=14){
+      paws.innerHTML = '';
+      for(let i=0;i<n;i++){
+        const p = document.createElement('img');
+        p.src = pawSVG;
+        p.className = 'paw';
+        const left = Math.random()*100;
+        const delay = Math.random()*6;
+        const dur = 7 + Math.random()*8;
+        const size = 16 + Math.random()*16;
+        p.style.left = left + 'vw';
+        p.style.animationDelay = delay + 's';
+        p.style.animationDuration = dur + 's';
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.top = (-120 - Math.random()*200) + 'px';
+        paws.appendChild(p);
+      }
+    }
+    spawnPaws(16);
+
+    // --- Plan builder state ---
+    let petType = 'Cat';
+    let petCount = 1;
+    let freqWeeks = 4;
+    let focus = new Set(['Essentials']);
+
+    const petTypeHint = $('#petTypeHint');
+    const petCountEl = $('#petCount');
+    const freqEl = $('#freq');
+    const countEl = $('#count');
+    const freqHint = $('#freqHint');
+    const priceEl = $('#price');
+    const summaryEl = $('#summary');
+    const pillEl = $('#pill');
+
+    function planTier(){
+      const f = focus.size;
+      if(petCount >= 3 || f >= 4) return 'Pro';
+      if(petCount >= 2 || f >= 2) return 'Plus';
+      return 'Starter';
+    }
+
+    function estimatePrice(){
+      // playful estimation formula (not real pricing)
+      const base = petType === 'Dog' ? 44 : (petType === 'Both' ? 52 : 38);
+      const countFactor = 1 + (petCount-1)*0.55;
+      const focusFactor = 1 + (Math.max(0, focus.size-1))*0.10;
+      const freqFactor = 4 / freqWeeks; // more frequent delivery slightly higher monthly
+      const low = Math.round(base * countFactor * focusFactor * freqFactor);
+      const high = Math.round(low * 1.35);
+      return { low, high };
+    }
+
+    function updateSummary(){
+      petTypeHint.textContent = petType + ' selected';
+      petCountEl.textContent = String(petCount);
+      freqHint.textContent = `Every ${freqWeeks} weeks`;
+
+      const tier = planTier();
+      pillEl.textContent = tier;
+
+      const f = [...focus];
+      const focusText = f.length ? f.join(', ') : 'No focus picked';
+      const who = `${petCount} ${petType.toLowerCase()}${petCount>1 && petType!=='Both' ? 's' : ''}`;
+      summaryEl.textContent = `${who} • every ${freqWeeks} weeks • ${focusText}`;
+
+      const {low, high} = estimatePrice();
+      priceEl.textContent = `$${low}–$${high}`;
+    }
+
+    // Pet type buttons
+    $$('.seg button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.seg button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        petType = btn.dataset.pet;
+        updateSummary();
+      });
+    });
+
+    // Range inputs
+    countEl.addEventListener('input', () => {
+      petCount = Number(countEl.value);
+      updateSummary();
+    });
+    freqEl.addEventListener('input', () => {
+      freqWeeks = Number(freqEl.value);
+      updateSummary();
+    });
+
+    // Chips
+    $$('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const key = chip.dataset.chip;
+        if(focus.has(key)){
+          focus.delete(key);
+          chip.classList.remove('on');
+        } else {
+          focus.add(key);
+          chip.classList.add('on');
+        }
+        updateSummary();
+      });
+    });
+
+    // Copy plan
+    $('#copyPlan').addEventListener('click', async () => {
+      const text = `Wetnose plan idea: ${summaryEl.textContent} | Est. ${priceEl.textContent} / month (${pillEl.textContent})`;
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast('Copied!', 'Plan text copied to clipboard. Paste it anywhere.');
+      } catch(e){
+        showToast('Copy blocked', 'Your browser blocked clipboard access. You can manually select the summary text.');
+      }
+    });
+
+    // Mini quiz
+    const quizResult = $('#quizResult');
+    $$('.quiz button').forEach(b => {
+      b.addEventListener('click', () => {
+        $$('.quiz button').forEach(x => x.classList.remove('selected'));
+        b.classList.add('selected');
+        const v = b.dataset.quiz;
+        const map = {
+          'Picky': 'Try fewer changes, more consistency.',
+          'Sensitive': 'Prioritise gentle, low-irritant options.',
+          'Easy-going': 'Keep it simple and cost-efficient.',
+          'Active': 'Plan for higher usage and frequent top-ups.'
+        };
+        quizResult.textContent = map[v] || 'Nice choice!';
+      });
+    });
+
+    // Mood switch (playful vs calm)
+    const moodSwitch = $('#moodSwitch');
+    const moodLabel = $('#moodLabel');
+    let playful = true;
+
+    function setMood(on){
+      playful = on;
+      moodSwitch.classList.toggle('on', on);
+      moodSwitch.setAttribute('aria-checked', String(on));
+      moodLabel.textContent = on ? 'Playful mode' : 'Calm mode';
+      spawnPaws(on ? 16 : 6);
+      document.documentElement.style.setProperty('--pink', on ? '#ff4fa3' : '#ff6fb8');
+      document.documentElement.style.setProperty('--blue', on ? '#38b6ff' : '#78c9ff');
+    }
+
+    moodSwitch.addEventListener('click', () => setMood(!playful));
+    moodSwitch.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setMood(!playful); }
+    });
+
+    // Toast
+    const toast = $('#toast');
+    const toastTitle = $('#toastTitle');
+    const toastBody = $('#toastBody');
+    const toastClose = $('#toastClose');
+    let toastClicks = 0;
+
+    function showToast(title, body){
+      toastTitle.textContent = title;
+      toastBody.textContent = body;
+      toast.style.display = 'flex';
+    }
+    function hideToast(){ toast.style.display = 'none'; }
+
+    $('#btnToast').addEventListener('click', () => {
+      toastClicks++;
+      if(toastClicks % 3 === 0){
+        showToast('✨ Bonus!', 'You unlocked extra paws. (Okay, that’s it 😄)');
+        spawnPaws(22);
+        setTimeout(() => spawnPaws(playful ? 16 : 6), 1600);
+      } else {
+        showToast('🎁 Little surprise', 'Try the plan builder on the right — it updates live as you click.');
+      }
+    });
+    toastClose.addEventListener('click', hideToast);
+
+    // Fake scan micro interaction
+    const formNote = $('#formNote');
+    $('#fakeScan').addEventListener('click', () => {
+      formNote.textContent = '📷 Scan simulated! Your plan is remembered for this session.';
+      showToast('Scan simulated', 'Nice. Now hit Join to save your email for updates.');
+    });
+
+    // Waitlist (demo)
+    $('#waitlist').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = $('#email').value.trim();
+      if(!email) return;
+      const plan = `${summaryEl.textContent} | Est. ${priceEl.textContent} (${pillEl.textContent})`;
+      showToast('You’re on the list 🎉', `Thanks! We saved: ${plan}`);
+      formNote.textContent = '✅ Submitted (demo). Replace this with your real backend later.';
+      e.target.reset();
+    });
+
+    // Init
+    updateSummary();
+  </script>
+</body>
 </html>
